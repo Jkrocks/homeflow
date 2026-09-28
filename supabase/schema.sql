@@ -106,3 +106,5 @@ grant execute on function public.join_household(text) to authenticated;
 do $$ begin
   alter publication supabase_realtime add table public.items;
 exception when duplicate_object then null; end $$;
+
+-- Security hardening lives in security.sql. Run it right after this file.

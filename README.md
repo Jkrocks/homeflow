@@ -27,3 +27,15 @@ A single static page (`index.html`) hosted on GitHub Pages, with [Supabase](http
 4. In the GitHub repo, go to **Settings → Pages**, choose **Deploy from a branch**, branch `main`, folder `/ (root)`.
 
 Without `config.js` values, HomeFlow runs in demo mode only.
+
+## Security
+
+- Every table uses row-level security: a household's data is readable and writable only by its members. Signed-out visitors get nothing.
+- Sign-in is by emailed link (PKCE flow); there are no passwords to leak.
+- Join codes are 8 characters, limited to 10 guesses per person per hour, and can be replaced from Settings.
+- Deletions sync as tombstones so realtime never broadcasts another household's row keys; `purge_deleted_items()` clears them after 30 days.
+- The page ships a strict Content-Security-Policy: scripts only from this site (Supabase's library is self-hosted in `vendor/`), network calls only to this project's Supabase. It refuses to run inside frames.
+- Everything read from the database is validated and escaped before it is shown.
+- The publishable key in `config.js` is meant to be public. Never put a secret or service_role key in this repo.
+
+Run `supabase/schema.sql`, then `supabase/security.sql`.
